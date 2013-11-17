@@ -13,7 +13,6 @@
 #ifdef __cplusplus
 
 #include "usb_serial.h"
-#include "usb_seremu.h"
 
 #include "elapsedMillis.h"
 #include "IntervalTimer.h"
