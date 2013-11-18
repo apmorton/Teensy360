@@ -109,6 +109,33 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0xC0,                                   // bmAttributes
         50,                                     // bMaxPower
 
+#ifdef FLASHER_INTERFACE
+        // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+        9,                                      // bLength
+        4,                                      // bDescriptorType
+        FLASHER_INTERFACE,                   // bInterfaceNumber
+        0,                                      // bAlternateSetting
+        2,                                      // bNumEndpoints
+        0xFF,                                   // bInterfaceClass
+        0x00,                                   // bInterfaceSubClass
+        0x00,                                   // bInterfaceProtocol
+        0,                                      // iInterface
+        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+        7,                                      // bLength
+        5,                                      // bDescriptorType
+        FLASHER_RX_ENDPOINT,                        // bEndpointAddress
+        0x02,                                   // bmAttributes (0x02=bulk)
+        FLASHER_RX_SIZE, 0,                         // wMaxPacketSize
+        0,                                      // bInterval
+        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+        7,                                      // bLength
+        5,                                      // bDescriptorType
+        FLASHER_TX_ENDPOINT | 0x80,                 // bEndpointAddress
+        0x02,                                   // bmAttributes (0x02=bulk)
+        FLASHER_TX_SIZE, 0,                         // wMaxPacketSize
+        0,                                      // bInterval
+#endif // FLASHER_INTERFACE
+
 #ifdef CDC_DATA_INTERFACE
         // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
         9,                                      // bLength
@@ -240,23 +267,6 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         CDC2_TX_SIZE, 0,                         // wMaxPacketSize
         0,                                      // bInterval
 #endif // CDC_DATA_INTERFACE
-
-#ifdef FLASHER_INTERFACE
-        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-        7,                                      // bLength
-        5,                                      // bDescriptorType
-        FLASHER_RX_ENDPOINT,                        // bEndpointAddress
-        0x02,                                   // bmAttributes (0x02=bulk)
-        FLASHER_RX_SIZE, 0,                         // wMaxPacketSize
-        0,                                      // bInterval
-        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
-        7,                                      // bLength
-        5,                                      // bDescriptorType
-        FLASHER_TX_ENDPOINT | 0x80,                 // bEndpointAddress
-        0x02,                                   // bmAttributes (0x02=bulk)
-        FLASHER_TX_SIZE, 0,                         // wMaxPacketSize
-        0,                                      // bInterval
-#endif // FLASHER_INTERFACE
 };
 
 

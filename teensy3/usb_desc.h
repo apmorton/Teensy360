@@ -92,10 +92,10 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define EP0_SIZE              64
   #define NUM_ENDPOINTS         11
   #define NUM_USB_BUFFERS       12
-  #define NUM_INTERFACE         4
+  #define NUM_INTERFACE         5
   
-  #define CDC_STATUS_INTERFACE  0
-  #define CDC_DATA_INTERFACE    1
+  #define CDC_STATUS_INTERFACE  1
+  #define CDC_DATA_INTERFACE    2
   #define CDC_ACM_ENDPOINT      6
   #define CDC_RX_ENDPOINT       7
   #define CDC_TX_ENDPOINT       8
@@ -103,8 +103,8 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define CDC_RX_SIZE           64
   #define CDC_TX_SIZE           64
   
-  #define CDC2_STATUS_INTERFACE 2
-  #define CDC2_DATA_INTERFACE   3
+  #define CDC2_STATUS_INTERFACE 3
+  #define CDC2_DATA_INTERFACE   4
   #define CDC2_ACM_ENDPOINT     9
   #define CDC2_RX_ENDPOINT      10
   #define CDC2_TX_ENDPOINT      11
@@ -112,13 +112,13 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define CDC2_RX_SIZE          64
   #define CDC2_TX_SIZE          64
   
-  #define FLASHER_INTERFACE     1
+  #define FLASHER_INTERFACE     0
   #define FLASHER_RX_ENDPOINT   5
   #define FLASHER_TX_ENDPOINT   2
   #define FLASHER_RX_SIZE       64
   #define FLASHER_TX_SIZE       64
 
-  #define CONFIG_DESC_SIZE      (9+(9+5+5+4+5+7+9+7+7)+(9+5+5+4+5+7+9+7+7)+7+7)
+  #define CONFIG_DESC_SIZE      (9+(9+7+7)+(9+5+5+4+5+7+9+7+7)+(9+5+5+4+5+7+9+7+7))
   
   #define ENDPOINT2_CONFIG      ENDPOINT_TRANSIMIT_ONLY
   #define ENDPOINT5_CONFIG      ENDPOINT_RECEIVE_ONLY
