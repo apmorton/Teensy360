@@ -22,6 +22,24 @@ void XSPIClass::powerOffXbox() {
     digitalWriteFast(XBSB_EJ, HIGH);
 }
 
+void XSPIClass::enterFlashMode() {
+    digitalWriteFast(XBSB_XX, LOW);
+    
+    delay(50); // 50ms
+    
+    digitalWriteFast(SS, LOW);
+    digitalWriteFast(XBSB_EJ, LOW);
+    
+    delay(50); // 50ms
+    
+    digitalWriteFast(XBSB_XX, HIGH);
+    digitalWriteFast(XBSB_EJ, HIGH);
+    
+    delay(50); // 50ms
+    
+    inFlashMode = true;
+}
+
 void XSPIClass::leaveFlashMode() {
     digitalWriteFast(SS, HIGH);
     digitalWriteFast(XBSB_EJ, LOW);
@@ -30,4 +48,6 @@ void XSPIClass::leaveFlashMode() {
     
     digitalWriteFast(XBSB_XX, LOW);
     digitalWriteFast(XBSB_EJ, HIGH);
+    
+    inFlashMode = false;
 }

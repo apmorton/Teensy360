@@ -16,8 +16,9 @@ void initPins(void) {
     digitalWriteFast(XBSB_XX, HIGH);
     digitalWriteFast(XBSB_EJ, HIGH);
     digitalWriteFast(XBOX_KIOSK, HIGH);
+    
     XSPI.begin();
-    //XSPI.init(2);
+    XSPI.init(8);
     
     Serial1.begin(UART_DEFAULT_BAUD);
 }
@@ -59,11 +60,21 @@ void handlePost(void) {
 }
 
 int main(void) {
+    static bool inFlashMode = false;
     initPins();
 
     while (1) {
-        handleSerial();
-        handlePost();
+        if (inFlashMode != XSPI.inFlashMode) {
+            inFlashMode = XSPI.inFlashMode;
+            if (inFlashMode)
+                UsbSerial1.println("Entering Flash Mode");
+            else
+                UsbSerial1.println("Leaving Flash Mode");
+        }
+        if (!XSPI.inFlashMode) {
+            handleSerial();
+            handlePost();
+        }
         Flasher.runReadyCommand();
     }
 }

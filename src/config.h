@@ -13,4 +13,7 @@
 // Default baud rate to open UART on
 #define UART_DEFAULT_BAUD       115200
 
+// Version reported by the flasher
+#define FLASHER_ARM_VERSION     1
+
 #endif
