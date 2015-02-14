@@ -84,11 +84,19 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
 #if defined(USB_SERIAL)
   #define VENDOR_ID             0xFFFF
   #define PRODUCT_ID            0x0004
-  #define DEVICE_CLASS          2	// 2 = Communication Class
+  #define DEVICE_CLASS          0xEF	// 0xEF = Miscellaneous
+  #define DEVICE_SUBCLASS	0x02
+  #define DEVICE_PROTOCOL	0x01	// 0x02, 0x01: Interface Association Descriptor
   #define MANUFACTURER_NAME     {'T','e','e','n','s','y','d','u','i','n','o'}
   #define MANUFACTURER_NAME_LEN 11
   #define PRODUCT_NAME          {'U','S','B',' ','S','e','r','i','a','l'}
   #define PRODUCT_NAME_LEN      10
+  #define CDCI1_NAME  {'C','D','C','-','A','C','M',' ','1'}	//Names for interfaces
+  #define CDCI1_NAME_LEN 9
+  #define CDCI2_NAME  {'C','D','C','-','A','C','M',' ','2'}
+  #define CDCI2_NAME_LEN 9
+  #define FLASH_NAME  {'X','F','L','A','S','H'}
+  #define FLASH_NAME_LEN 6
   #define EP0_SIZE              64
   #define NUM_ENDPOINTS         11
   #define NUM_USB_BUFFERS       12
@@ -118,7 +126,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define FLASHER_RX_SIZE       64
   #define FLASHER_TX_SIZE       64
 
-  #define CONFIG_DESC_SIZE      (9+(9+7+7)+(9+5+5+4+5+7+9+7+7)+(9+5+5+4+5+7+9+7+7))
+  #define CONFIG_DESC_SIZE      (9+(8+9+7+7)+(8+9+5+5+4+5+7+9+7+7)+(8+9+5+5+4+5+7+9+7+7))
   
   #define ENDPOINT2_CONFIG      ENDPOINT_TRANSIMIT_ONLY
   #define ENDPOINT5_CONFIG      ENDPOINT_RECEIVE_ONLY

@@ -21,7 +21,7 @@
 // Teensy 3.0 functions
 #include <mk20dx128.h>
 // use 16-bit frame if SPI_USE_8BIT_FRAME is zero
-#define SPI_USE_8BIT_FRAME 0
+#define SPI_USE_8BIT_FRAME 1
 // Limit initial fifo to three entries to avoid fifo overrun
 #define SPI_INITIAL_FIFO_DEPTH 3
 // define some symbols that are not in mk20dx128.h
@@ -75,7 +75,7 @@ void SdSpi::init(uint8_t sckDivisor) {
     ctar = SPI_CTAR_PBR(1) | SPI_CTAR_BR(6) | SPI_CTAR_CSSCK(6);
   }
   // CTAR0 - 8 bit transfer
-  ctar0 = ctar | SPI_CTAR_FMSZ(7);
+  ctar0 = ctar | SPI_CTAR_FMSZ(7) | SPI_CTAR_LSBFE;
 
   // CTAR1 - 16 bit transfer
   ctar1 = ctar | SPI_CTAR_FMSZ(15);

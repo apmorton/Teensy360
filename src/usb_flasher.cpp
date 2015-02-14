@@ -1,6 +1,7 @@
 #include <WProgram.h>
 
 #include "XSPI.h"
+#include "XNAND.h"
 #include "usb_flasher.h"
 #include "usb_dev.h"
 #include "config.h"
@@ -21,25 +22,53 @@ void NandFlasher::handleDataDeInit() {
 }
 
 void NandFlasher::handleDataStatus() {
-	uint8_t data[4] = {(uint8_t)(status >> 8), (uint8_t)(status & 0xFF), 0, 0};
-	write(data, 4);
+	uint32_t data = status;
+	write((uint8_t*)&data, 4);
 	flush();
 }
 
 void NandFlasher::handleDataRead() {
+	uint32_t block = argA << 5;
 	uint32_t length = argB / 4;
-	
+
+	uint8_t buffer[0x84*4];
+
 	while (length) {
-	
+		uint32_t readwords = min(length, 0x84);
+		status = XNAND.beginRead(block);
+		XNAND.readBuffer(buffer, readwords);
+		write(buffer, readwords*4);
+		length-=readwords;
+		block++;
 	}
+
+	flush();
 }
 
 void NandFlasher::handleDataWrite() {
+	uint32_t block = argA << 5;
+	uint32_t length = argB / 4;
+
+	uint8_t buffer[0x84*4];
+
+	status = XNAND.eraseBlock(block);
+
+	while(length)
+	{
+		uint32_t writewords = min(length, 0x84);
+		XNAND.beginWrite();
+		readBytes((char*)buffer, writewords*4);
+		XNAND.writeBuffer(buffer, writewords);
+		XNAND.writeExecute(block);
+		length-=writewords;
+		block++;
+	}
 
 }
 
 void NandFlasher::handleDataErase() {
-
+	uint32_t block = argA << 5;
+	status = XNAND.eraseBlock(block);	
 }
 
 void NandFlasher::handleXboxPwrOn() {
@@ -58,9 +87,7 @@ void NandFlasher::handleDevVersion() {
 }
 
 int NandFlasher::vendorCallback(uint8_t bRequest, uint16_t wLength) {
-	if (commandPending || commandReady || wLength != 8) {
-		commandPending = false;
-		commandReady = false;
+	if (wLength != 8) {
 		return 0;
 	}
 
@@ -75,10 +102,6 @@ int NandFlasher::vendorCallback(uint8_t bRequest, uint16_t wLength) {
 		case CMD_XBOX_PWRON:
 		case CMD_XBOX_PWROFF:
 		case CMD_DEV_UPDATE:
-			commandPending = true;
-			commandReady = false;
-			commandCode = bRequest;
-
 			return 1;
 		default:
 			return 0;
@@ -86,21 +109,26 @@ int NandFlasher::vendorCallback(uint8_t bRequest, uint16_t wLength) {
 }
 
 void NandFlasher::vendorDataCallback(uint8_t bRequest, uint32_t argA, uint32_t argB) {
-	if (!commandPending || bRequest != commandCode || commandReady) {
-		commandCode = false;
-		commandReady = false;
-		return;
-	}
-
-	commandPending = false;
-	commandReady = true;
-	commandCode = bRequest;
-	this->argA = argA;
-	this->argB = argB;
+	commandPending = bRequest;
+	this->pendingA = argA;
+	this->pendingB = argB;
 }
 
 void NandFlasher::runReadyCommand() {
-	if (!commandReady) return;
+
+	//XFlash likes to send requests before we are done working
+	//Assume that xflash doesn't run commands with no return twice in a row?
+	if(commandPending)
+	{
+		commandCode = commandPending;
+		argA = pendingA;
+		argB = pendingB;
+		commandPending = 0;
+	}
+	else
+	{
+		return;
+	}
 
 	UsbSerial1.print("CMD: ");
 	UsbSerial1.print(commandCode, HEX);
@@ -142,10 +170,6 @@ void NandFlasher::runReadyCommand() {
 			_reboot_Teensyduino_();
 			break;
 	}
-	
-	commandPending = false;
-	commandReady = false;
-	commandCode = 0;
 }
 
 // Maximum number of transmit packets to queue so we don't starve other endpoints for memory

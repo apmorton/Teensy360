@@ -110,6 +110,18 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         50,                                     // bMaxPower
 
 #ifdef FLASHER_INTERFACE
+
+	//IAD for flasher
+	// interface association descriptor, USB ECN, Table 9-Z
+        8,                                      // bLength
+        11,                                     // bDescriptorType
+        FLASHER_INTERFACE,                   // bFirstInterface
+        1,                                      // bInterfaceCount
+        0xFF, // bInterfaceClass
+        0x00, // bInterfaceSubClass
+        0x00, // bInterfaceProtocol
+        6,                                      // iFunction
+
         // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
         9,                                      // bLength
         4,                                      // bDescriptorType
@@ -119,7 +131,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0xFF,                                   // bInterfaceClass
         0x00,                                   // bInterfaceSubClass
         0x00,                                   // bInterfaceProtocol
-        0,                                      // iInterface
+        6,                                      // iInterface
         // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
         7,                                      // bLength
         5,                                      // bDescriptorType
@@ -137,6 +149,15 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 #endif // FLASHER_INTERFACE
 
 #ifdef CDC_DATA_INTERFACE
+        // interface association descriptor, USB ECN, Table 9-Z
+        8,                                      // bLength
+        11,                                     // bDescriptorType
+        CDC_STATUS_INTERFACE,                   // bFirstInterface
+        2,                                      // bInterfaceCount
+        0x02,                                   // bFunctionClass
+        0x02,                                   // bFunctionSubClass
+        0x01,                                   // bFunctionProtocol
+        4,                                      // iFunction
         // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
         9,                                      // bLength
         4,                                      // bDescriptorType
@@ -146,7 +167,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0x02,                                   // bInterfaceClass
         0x02,                                   // bInterfaceSubClass
         0x01,                                   // bInterfaceProtocol
-        0,                                      // iInterface
+        4,                                      // iInterface
         // CDC Header Functional Descriptor, CDC Spec 5.2.3.1, Table 26
         5,                                      // bFunctionLength
         0x24,                                   // bDescriptorType
@@ -185,7 +206,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0x0A,                                   // bInterfaceClass
         0x00,                                   // bInterfaceSubClass
         0x00,                                   // bInterfaceProtocol
-        0,                                      // iInterface
+        4,                                      // iInterface
         // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
         7,                                      // bLength
         5,                                      // bDescriptorType
@@ -203,6 +224,15 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 #endif // CDC_DATA_INTERFACE
 
 #ifdef CDC2_DATA_INTERFACE
+        // interface association descriptor, USB ECN, Table 9-Z
+        8,                                      // bLength
+        11,                                     // bDescriptorType
+        CDC2_STATUS_INTERFACE,                   // bFirstInterface
+        2,                                      // bInterfaceCount
+        0x02,                                   // bFunctionClass
+        0x02,                                   // bFunctionSubClass
+        0x01,                                   // bFunctionProtocol
+        5,        
         // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
         9,                                      // bLength
         4,                                      // bDescriptorType
@@ -212,7 +242,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0x02,                                   // bInterfaceClass
         0x02,                                   // bInterfaceSubClass
         0x01,                                   // bInterfaceProtocol
-        0,                                      // iInterface
+        5,                                      // iInterface
         // CDC Header Functional Descriptor, CDC Spec 5.2.3.1, Table 26
         5,                                      // bFunctionLength
         0x24,                                   // bDescriptorType
@@ -251,7 +281,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0x0A,                                   // bInterfaceClass
         0x00,                                   // bInterfaceSubClass
         0x00,                                   // bInterfaceProtocol
-        0,                                      // iInterface
+        5,                                      // iInterface
         // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
         7,                                      // bLength
         5,                                      // bDescriptorType
@@ -315,6 +345,25 @@ struct usb_string_descriptor_struct usb_string_serial_number_default = {
         {0,0,0,0,0,0,0,0,0,0}
 };
 
+struct usb_string_descriptor_struct string4 = {
+        2 + CDCI1_NAME_LEN * 2,
+        3,
+        CDCI1_NAME
+};
+
+struct usb_string_descriptor_struct string5 = {
+        2 + CDCI2_NAME_LEN * 2,
+        3,
+        CDCI2_NAME
+};
+
+struct usb_string_descriptor_struct string6 = {
+        2 + FLASH_NAME_LEN * 2,
+        3,
+        FLASH_NAME
+};
+
+
 void usb_init_serialnumber(void)
 {
 	char buf[11];
@@ -352,6 +401,9 @@ const usb_descriptor_list_t usb_descriptor_list[] = {
 	{0x0301, 0x0409, (const uint8_t *)&usb_string_manufacturer_name, 0},
 	{0x0302, 0x0409, (const uint8_t *)&usb_string_product_name, 0},
 	{0x0303, 0x0409, (const uint8_t *)&usb_string_serial_number, 0},
+        {0x0304, 0x0409, (const uint8_t *)&string4, 0},//Strings for interface names
+	{0x0305, 0x0409, (const uint8_t *)&string5, 0},
+	{0x0306, 0x0409, (const uint8_t *)&string6, 0},
 	{0, 0, NULL, 0}
 };
 

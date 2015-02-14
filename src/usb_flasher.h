@@ -16,13 +16,14 @@
 
 #ifdef __cplusplus
 
-class NandFlasher : public Stream {
-	bool commandPending = false;
-	bool commandReady = false;
-	
+class NandFlasher : public Stream {	
 	uint8_t commandCode = 0;
 	uint32_t argA;
 	uint32_t argB;
+
+	uint8_t commandPending = 0;
+	uint32_t pendingA;
+	uint32_t pendingB;
 	
 	uint16_t status;
 	

@@ -18,7 +18,7 @@ void initPins(void) {
     digitalWriteFast(XBOX_KIOSK, HIGH);
     
     XSPI.begin();
-    XSPI.init(8);
+    XSPI.init(2);
     
     Serial1.begin(UART_DEFAULT_BAUD);
 }
